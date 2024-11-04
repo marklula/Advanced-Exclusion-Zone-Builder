@@ -1,101 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced Exclusion Zone Builder</title>
     <style>
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start; /* Changed to flex-start to position header and banner at the top */
+            justify-content: flex-start; 
             height: 100vh;
             margin: 0;
-            font-family: Arial, sans-serif; /* Added a font for better appearance */
-            background-color: black;
-            color:white;
+            font-family: 'Arial', sans-serif;
+            background-color: #121212; /* Dark background for body */
+            color: #e0e0e0; /* Light text color */
         }
+
         h1 {
-            margin-top: 20px; /* Space above the header */
+            margin-top: 20px;
+            font-size: 24px;
+            color: #ffffff; /* White header color */
         }
+
         #banner {
-            background-color: gray; /* Light gray background for banner */
-            border: 1px solid #ccc; /* Light border around the banner */
-            padding: 15px; /* Space inside the banner */
-            text-align: center; /* Centered text */
-            margin: 10px 0; /* Space above and below the banner */
-            width: 90%; /* Adjusted width to fit nicely */
+            background-color: #1e1e1e; /* Darker banner background */
+            color: #ffffff; /* White text color */
+            border-radius: 5px; 
+            padding: 15px; 
+            text-align: center; 
+            margin: 10px 0; 
+            width: 90%; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Deeper shadow for banner */
         }
+
         #container {
             position: relative;
             width: 850px;
-            height: 520px; /* Adjusted height to fit the y-range */
-            background-color: white;
-            border: 1px solid #000;
+            height: 520px; 
+            background-color: #2c2c2c; /* Dark drawing area */
+            border: 1px solid #444; 
+            border-radius: 5px; 
             margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Shadow for drawing area */
+            overflow: hidden; 
         }
+
         .dot {
             position: absolute;
-            width: 5px;
-            height: 5px;
-            background-color: red;
+            width: 6px; 
+            height: 6px;
+            background-color: #ff4081; /* Bright color for dots */
             border-radius: 50%;
+            box-shadow: 0 0 2px rgba(255, 255, 255, 0.3); /* Glow effect */
         }
+
         #canvas {
             position: absolute;
             top: 0;
             left: 0;
         }
+
         #crosshair {
             position: absolute;
             top: 0;
             left: 0;
             width: 850px;
-            height: 520px; /* Adjusted height to fit the y-range */
+            height: 520px; 
             pointer-events: none;
         }
+
         #crosshair .horizontal, #crosshair .vertical {
             position: absolute;
-            background-color: black;
-            opacity: 0.5;
+            background-color: #ffffff; /* White crosshair lines */
+            opacity: 0.7;
         }
+
         #crosshair .horizontal {
-            top: 260px; /* Centered horizontally within the new height */
+            top: 260px; 
             left: 0;
-            width: 850px; /* Full width of the drawing panel */
+            width: 850px; 
             height: 1px;
         }
+
         #crosshair .vertical {
             top: 0;
-            left: 425px; /* Centered vertically */
+            left: 425px; 
             width: 1px;
-            height: 520px; /* Full height of the drawing panel */
+            height: 520px; 
         }
+
         #coordinates {
             width: 850px;
             height: 50px;
-            border: 1px solid #ccc;
+            border: 1px solid #444; /* Dark border */
             padding: 10px;
-            background-color: #fff;
+            background-color: #2c2c2c; /* Dark background for coordinates */
+            color: #ffffff; /* White text color for coordinates */
             overflow-x: auto;
             white-space: nowrap;
+            border-radius: 5px; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Subtle shadow */
+            margin-bottom: 10px; /* Space below coordinates */
         }
-        #copyButton, #clearButton {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-right: 10px; /* Space between buttons */
-        }
+
         #buttonContainer {
             display: flex;
             justify-content: center;
-            margin-bottom: 10px; /* Space below buttons */
+            margin-bottom: 20px; /* Space below button container */
         }
-        #uploadButton {
-            margin-top: 10px;
+
+        button {
+            margin: 0 5px; 
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+            transition: background-color 0.3s ease; 
         }
+
+        #copyButton {
+            background-color: #388e3c; /* Green for copy button */
+            color: white;
+        }
+
+        #clearButton {
+            background-color: #d32f2f; /* Red for clear button */
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.8; 
+        }
+
         #imageInput {
-            margin-top: 10px;
+            margin: 20px 0; /* Space above and below file input */
+            display: block; 
+            background-color: #3c3c3c; /* Dark background for input */
+            color: #ffffff; /* White text for input */
+            border: 1px solid #444; /* Dark border */
+            border-radius: 5px; /* Rounded corners */
+            padding: 5px; /* Padding inside input */
+            width: 200px; /* Fixed width for the input */
+            box-sizing: border-box; /* Ensure padding doesn't affect width */
+        }
+
+        #imageInput::file-selector-button {
+            background-color: #4a4a4a; /* Dark background for file button */
+            color: #ffffff; /* White text for button */
+            border: none; 
+            border-radius: 5px; /* Rounded corners */
+            padding: 5px 10px; /* Padding */
+            cursor: pointer;
         }
     </style>
 </head>
@@ -106,7 +163,7 @@
     </div>
     <input type="file" id="imageInput" accept="image/*" onchange="loadImage(event)" />
     <div id="container" onclick="placeDot(event)">
-        <canvas id="canvas" width="850" height="520"></canvas> <!-- Adjusted canvas height -->
+        <canvas id="canvas" width="850" height="520"></canvas>
         <div id="crosshair">
             <div class="horizontal"></div>
             <div class="vertical"></div>
@@ -125,20 +182,19 @@
         const ctx = canvas.getContext('2d');
         const dots = [];
         const centerX = 425;
-        const centerY = 260; // Adjusted to center within the new height
-        let backgroundImage = null; // Variable to store the background image
+        const centerY = 260; 
+        let backgroundImage = null; 
 
         function loadImage(event) {
             const file = event.target.files[0];
             const reader = new FileReader();
             reader.onload = function(e) {
-                backgroundImage = new Image(); // Create a new Image object
-                backgroundImage.src = e.target.result; // Set the image source
+                backgroundImage = new Image(); 
+                backgroundImage.src = e.target.result; 
                 backgroundImage.onload = function() {
-                    // Draw the uploaded image as the background
-                    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas before drawing
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
                     ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-                    redrawPolygon(); // Redraw the polygon after loading the image
+                    redrawPolygon(); 
                 }
             }
             if (file) {
@@ -150,13 +206,13 @@
             const rect = container.getBoundingClientRect();
             const x = event.clientX - rect.left;
             const y = event.clientY - rect.top;
-            const adjustedX = Math.round(x - centerX); // Original x-coordinates
-            const adjustedY = Math.round(centerY - y); // Reverse the y-coordinate and round
+            const adjustedX = Math.round(x - centerX); 
+            const adjustedY = Math.round(centerY - y); 
 
             dots.push({ x: adjustedX, y: adjustedY });
             drawDot(x, y);
 
-            redrawPolygon(); // Redraw the polygon every time a dot is added
+            redrawPolygon(); 
 
             updateCoordinates();
         }
@@ -164,36 +220,32 @@
         function drawDot(x, y) {
             const dot = document.createElement('div');
             dot.classList.add('dot');
-            dot.style.left = `${x - 2.5}px`;
-            dot.style.top = `${y - 2.5}px`;
+            dot.style.left = `${x - 3}px`; // Center the dot
+            dot.style.top = `${y - 3}px`; // Center the dot
             container.appendChild(dot);
         }
 
         function redrawPolygon() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas before redrawing
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
             if (backgroundImage) {
-                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height); // Redraw the background image
+                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height); 
             }
             if (dots.length > 0) {
                 ctx.beginPath();
-                ctx.moveTo(dots[0].x + centerX, centerY - dots[0].y); // Adjust y-coordinate
+                ctx.moveTo(dots[0].x + centerX, centerY - dots[0].y); 
 
                 for (let i = 1; i < dots.length; i++) {
-                    ctx.lineTo(dots[i].x + centerX, centerY - dots[i].y); // Adjust y-coordinate
+                    ctx.lineTo(dots[i].x + centerX, centerY - dots[i].y); 
                 }
                 ctx.closePath();
 
-                // Set fill color to red with 15% transparency
                 ctx.fillStyle = 'rgba(255, 0, 0, 0.15)';
                 ctx.fill();
-
-                // Draw the outline of the polygon
                 ctx.stroke();
             }
         }
 
         function updateCoordinates() {
-            // Flip x-coordinates for display only
             coordinatesBox.innerHTML = dots.map(dot => `${-dot.x}, ${dot.y}`).join(', ');
         }
 
@@ -207,17 +259,14 @@
         }
 
         function clearCoordinates() {
-            // Clear the dots array and coordinates display
             dots.length = 0;
             coordinatesBox.innerHTML = '';
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height); 
 
-            // Redraw the background image
             if (backgroundImage) {
-                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height); 
             }
 
-            // Remove all dot elements from the container
             const existingDots = document.querySelectorAll('.dot');
             existingDots.forEach(dot => dot.remove());
         }
