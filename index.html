@@ -1,276 +1,256 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Advanced Exclusion Zone Builder</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #f0f0f0;
-        }
-        h1 {
-            margin-top: 20px;
-        }
-        #banner {
-            background-color: #1e1e1e;
-            border: 1px solid #333;
-            padding: 15px;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Exclusion Zone Builder</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+    }
+    #banner {
+            background-color: #1e1e1e; /* Darker banner background */
+            color: #ffffff; /* White text color */
+            border-radius: 5px; 
+            padding: 15px; 
             text-align: center;
-            margin: 10px 0;
-            width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Deeper shadow for banner */
         }
-        #container {
-            position: relative;
-            width: 850px;
-            height: 520px;
-            background-color: #2a2a2a;
-            border: 1px solid #555;
-            margin-bottom: 20px;
-        }
-        .dot {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background-color: red;
-            border-radius: 50%;
-        }
-        #canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        #crosshair {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 850px;
-            height: 520px;
-            pointer-events: none;
-        }
-        #crosshair .horizontal, #crosshair .vertical {
-            position: absolute;
-            background-color: white;
-            opacity: 0.5;
-        }
-        #crosshair .horizontal {
-            top: 260px;
-            left: 0;
-            width: 850px;
-            height: 1px;
-        }
-        #crosshair .vertical {
-            top: 0;
-            left: 425px;
-            width: 1px;
-            height: 520px;
-        }
-        #coordinates {
-            width: 850px;
-            height: 50px;
-            border: 1px solid #333;
-            padding: 10px;
-            background-color: #1e1e1e;
-            overflow-x: auto;
-            white-space: nowrap;
-            margin-top: 10px;
-        }
-        #buttonContainer {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 10px 0;
-        }
-        #copyButton {
-            background-color: #388e3c; /* Green for copy button */
-            color: white;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-        }
-        #clearButton {
-            background-color: #d32f2f; /* Red for clear button */
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            color: white;
-        }
-        }
-        #controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-top: 10px;
-        }
-        #imageInput {
-            width: 200px;
-            padding: 5px;
-            background-color: #2a2a2a;
-            color: #fff;
-            border: 1px solid #555;
-        }
-        select {
-            padding: 5px;
-            background-color: #2a2a2a;
-            color: #fff;
-            border: 1px solid #555;
-        }
-
-        #imageInput::file-selector-button {
-            background-color: #4a4a4a; /* Dark background for file button */
-            color: #ffffff; /* White text for button */
-            border: none; 
-            border-radius: 5px; /* Rounded corners */
-            padding: 5px 10px; /* Padding */
-            cursor: pointer;
-        }
-    </style>
+    header {
+      background-color: #1e1e1e;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.5rem;
+      border-bottom: 1px solid #333;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+    canvas {
+      background-color: #222;
+      border: 1px solid #444;
+      cursor: crosshair;
+    }
+    .controls-top {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+      align-items: center;
+      width: 850px;
+      justify-content: flex-start;
+    }
+    .controls-bottom {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+      margin-top: 1rem;
+      width: 850px;
+      align-items: center;
+    }
+    select, input[type="text"], button {
+      border-radius: 8px;
+      border: 1px solid #555;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      font-family: inherit;
+      color: #fff;
+      background-color: #333;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    select:hover, button:hover {
+      background-color: #444;
+    }
+    input[type="text"] {
+      background-color: #1e1e1e;
+      cursor: text;
+      flex-grow: 1;
+      min-width: 0;
+    }
+    button.copy-btn {
+      background-color: #28a745;
+      border-color: #1e7e34;
+    }
+    button.copy-btn:hover {
+      background-color: #218838;
+    }
+    button.clear-btn {
+      background-color: #333;
+      border-color: #555;
+    }
+    button.clear-btn:hover {
+      background-color: #444;
+    }
+    .file-upload {
+      width: 200px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Advanced Exclusion Zone Builder</h1>
-    <div id="banner">
-        Exclusion zones provide a way to prevent the automated Speaker Tracking functionality within a particular zone from framing in non-desirable ways.
+  <header>Advanced Exclusion Zone Builder</header>
+  <div id="banner">
+        Exclusion zones provide a way to prevent the automated Speaker Tracking functionality within a particular zone from framing in non-desirable ways. This tool was developed to generate coordinates for the Cisco Quad Camera.
     </div>
-
-    <div id="controls">
-        <select id="deviceSelector" onchange="changeDevice()">
-            <option value="quad">Quad Camera</option>
-            <option value="roombar">Room Bar Pro</option>
-        </select>
-        <input type="file" id="imageInput" accept="image/*" onchange="loadImage(event)" />
+  <div class="container">
+    <div class="controls-top">
+      <select id="deviceSelector">
+        <option value="quad">Quad Camera</option>
+        <option value="roombar">Room Bar Pro</option>
+      </select>
+      <input type="file" id="imageLoader" class="file-upload" accept="image/*" />
     </div>
-    <br/>
-    <div id="container" onclick="placeDot(event)">
-        <canvas id="canvas" width="850" height="520"></canvas>
-        <div id="crosshair">
-            <div class="horizontal"></div>
-            <div class="vertical"></div>
-        </div>
+    <canvas id="drawingCanvas" width="850" height="520"></canvas>
+    <div class="controls-bottom">
+      <input type="text" id="coordinates" readonly />
+      <button class="copy-btn" onclick="copyCoordinates()">Copy</button>
+      <button class="clear-btn" onclick="clearCoordinates()">Clear</button>
     </div>
+  </div>
 
-    <div id="coordinates"></div>
-    <div id="buttonContainer">
-        <button id="copyButton" onclick="copyCoordinates()">Copy Coordinates</button>
-        <button id="clearButton" onclick="clearCoordinates()">Clear Coordinates</button>
-    </div>
+  <script>
+    const canvas = document.getElementById('drawingCanvas');
+    const ctx = canvas.getContext('2d');
+    const coordinatesInput = document.getElementById('coordinates');
+    const container = canvas;
+    let dots = [];
+    let backgroundImage = null;
 
-    <script>
-        const container = document.getElementById('container');
-        const canvas = document.getElementById('canvas');
-        const coordinatesBox = document.getElementById('coordinates');
-        const ctx = canvas.getContext('2d');
-        const dots = [];
-        let centerX = 425;
-        let centerY = 260;
-        let xRange = 850;
-        let yRange = 520;
-        let backgroundImage = null;
+    let xRange = 850;
+    let yRange = 520;
+    let centerX = canvas.width / 2;
+    let centerY = canvas.height / 2;
 
-        function changeDevice() {
-            const selection = document.getElementById('deviceSelector').value;
-            dots.length = 0;
-            coordinatesBox.innerHTML = '';
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            document.querySelectorAll('.dot').forEach(dot => dot.remove());
+    document.getElementById('deviceSelector').addEventListener('change', function () {
+      const selection = this.value;
+      if (selection === 'quad') {
+        xRange = 850;
+        yRange = 520;
+      } else if (selection === 'roombar') {
+        xRange = 1120; // -560 to 560
+        yRange = 960;  // -480 to 480
+      }
+      dots = [];
+      redrawPolygon();
+      updateCoordinates();
+    });
 
-            if (backgroundImage) ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+    canvas.addEventListener('click', placeDot);
 
-            if (selection === 'quad') {
-                centerX = 425;
-                centerY = 260;
-                xRange = 850;
-                yRange = 520;
-            } else if (selection === 'roombar') {
-                centerX = 425;
-                centerY = 260;
-                xRange = 1120; // -560 to 560
-                yRange = 960;  // -480 to 480
-            }
+    function applyFisheyeX(x) {
+      const selection = document.getElementById('deviceSelector').value;
+      if (selection === 'roombar') {
+        const maxX = xRange / 2;
+        const distortionFactor = 0.4;
+        const norm = x / maxX;
+        return x * (1 + distortionFactor * norm * norm);
+      }
+      return x;
+    }
+
+    function placeDot(event) {
+      const rect = container.getBoundingClientRect();
+      const canvasX = event.clientX - rect.left;
+      const canvasY = event.clientY - rect.top;
+
+      // Compute logical coordinates from click position
+      const logicalXRaw = ((canvasX - centerX) * xRange) / canvas.width;
+      const logicalY = ((centerY - canvasY) * yRange) / canvas.height;
+      const logicalX = Math.round(applyFisheyeX(Math.round(logicalXRaw)));
+
+      dots.push({
+        canvasX: canvasX,
+        canvasY: canvasY,
+        logicalX: logicalX,
+        logicalY: Math.round(logicalY),
+      });
+
+      redrawPolygon();
+      updateCoordinates();
+    }
+
+    function drawDot(x, y) {
+      ctx.beginPath();
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = 'red';
+      ctx.fill();
+    }
+
+    function redrawPolygon() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (backgroundImage) {
+        ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+      }
+      drawCrosshair();
+
+      // Draw dots and polygon lines at canvasX, canvasY (raw click positions)
+      if (dots.length > 0) {
+        // Draw polygon
+        ctx.beginPath();
+        ctx.moveTo(dots[0].canvasX, dots[0].canvasY);
+        for (let i = 1; i < dots.length; i++) {
+          ctx.lineTo(dots[i].canvasX, dots[i].canvasY);
         }
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.15)';
+        ctx.fill();
+        ctx.strokeStyle = 'red';
+        ctx.stroke();
 
-        function loadImage(event) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                backgroundImage = new Image();
-                backgroundImage.src = e.target.result;
-                backgroundImage.onload = function() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-                    redrawPolygon();
-                }
-            }
-            if (file) {
-                reader.readAsDataURL(file);
-            }
-        }
+        // Draw dots
+        dots.forEach(dot => drawDot(dot.canvasX, dot.canvasY));
+      }
+    }
 
-        function placeDot(event) {
-            const rect = container.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            const adjustedX = Math.round((x - centerX) * (xRange / 850));
-            const adjustedY = Math.round((centerY - y) * (yRange / 520));
+    function updateCoordinates() {
+      // Show fisheye-corrected logical coordinates, flipped x, rounded
+      coordinatesInput.value = dots
+        .map(p => `${Math.round(-p.logicalX)},${Math.round(p.logicalY)}`)
+        .join(', ');
+    }
 
-            dots.push({ x: adjustedX, y: adjustedY });
-            drawDot(x, y);
-            redrawPolygon();
-            updateCoordinates();
-        }
+    function copyCoordinates() {
+      coordinatesInput.select();
+      document.execCommand('copy');
+    }
 
-        function drawDot(x, y) {
-            const dot = document.createElement('div');
-            dot.classList.add('dot');
-            dot.style.left = `${x - 2.5}px`;
-            dot.style.top = `${y - 2.5}px`;
-            container.appendChild(dot);
-        }
+    function clearCoordinates() {
+      dots = [];
+      redrawPolygon();
+      updateCoordinates();
+    }
 
-        function redrawPolygon() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (backgroundImage) {
-                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-            }
-            if (dots.length > 0) {
-                ctx.beginPath();
-                ctx.moveTo(centerX + (dots[0].x * 850 / xRange), centerY - (dots[0].y * 520 / yRange));
-                for (let i = 1; i < dots.length; i++) {
-                    ctx.lineTo(centerX + (dots[i].x * 850 / xRange), centerY - (dots[i].y * 520 / yRange));
-                }
-                ctx.closePath();
-                ctx.fillStyle = 'rgba(255, 0, 0, 0.15)';
-                ctx.fill();
-                ctx.stroke();
-            }
-        }
+    function drawCrosshair() {
+      ctx.strokeStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(centerX, 0);
+      ctx.lineTo(centerX, canvas.height);
+      ctx.moveTo(0, centerY);
+      ctx.lineTo(canvas.width, centerY);
+      ctx.stroke();
+    }
 
-        function updateCoordinates() {
-            coordinatesBox.innerHTML = dots.map(dot => `${-dot.x}, ${dot.y}`).join(', ');
-        }
+    document.getElementById('imageLoader').addEventListener('change', function (e) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const img = new Image();
+        img.onload = function () {
+          backgroundImage = img;
+          redrawPolygon();
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    });
 
-        function copyCoordinates() {
-            navigator.clipboard.writeText(coordinatesBox.innerText).then(() => alert('Coordinates copied!'));
-        }
-
-        function clearCoordinates() {
-            dots.length = 0;
-            coordinatesBox.innerHTML = '';
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            document.querySelectorAll('.dot').forEach(dot => dot.remove());
-            if (backgroundImage) ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-        }
-    </script>
+    redrawPolygon();
+  </script>
 </body>
 </html>
