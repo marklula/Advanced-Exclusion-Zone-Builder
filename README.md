@@ -1,5 +1,3 @@
-This tool provides a visual way to generate a set of coordinates for the exclusion zone feature on Cisco Devices. 
+This tool has been sunset. This feature is now natively available in Room OS. 
 
-Use the drawing canvas to create a polygon and then copy the coordinates into your devices camera configuration. 
-
-This tool also allows for the upload of a screenshot or UI capture to help aid with the drawing.
+Details on how to configure it can be found here: https://help.webex.com/default/article/kq62bb/Set-up-a-video-exclusion-area-on-Room-devices
